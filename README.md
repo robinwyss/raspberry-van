@@ -26,3 +26,14 @@ Install packages
 ### Frontend
 `cd web`
 `npm run start`
+
+## Config
+
+add a config.ini file, example:
+```
+[DB]
+HOST = http://localhost:8086
+TOKEN = XXX
+ORG = van
+BUCKET = data
+```
