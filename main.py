@@ -1,22 +1,19 @@
-from flask import Flask
-from flask_cors import CORS
+#!/usr/bin/python
 
-app = Flask(__name__)
-CORS(app)
+from tracer import read
 
-@app.route("/mppt")
-def mppt():
-    return {
-        "solarVoltage": 36,
-        "solarCurrent": 5.4,
-        "batteryVoltage": 13.3,
-        "chargingCurrent": 10}
+result = read()
 
-@app.route("/climate")
-def climate():
-    return {
-        "temperature": 21
-    }
+print("PV Voltage (V): ", result.pv.volt)
+print("PV Current (A): ", result.pv.amp)
+print("PV Power (W): ", result.pv.power)
+print("Battery Voltage (V):", result.battery.volt)
+print("Battery Charging Current (A):", result.battery.volt)
+print("Battery Charging Power (W):", result.battery.power)
+print("Load Voltage (V):", result.load.volt)
+print("Load Charging Current (A):", result.load.amp)
+print("Load Charging Power (W):", result.load.power)
+print("Battery Temp (C):", result.battery.status)
+print("Battery Status: ", result.battery.status)
+print("batterySOC=", result.battery.soc)
 
-if __name__ == "__main__":
-    app.run()
