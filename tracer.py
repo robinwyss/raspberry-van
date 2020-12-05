@@ -1,8 +1,13 @@
 #!/usr/bin/python
 
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
-
 import time
+import collections
+
+Panel = collections.namedtuple('Panel', 'voltage ampere power')
+Battery = collections.namedtuple('Battery', 'voltage ampere power status temperature soc')
+Load = collections.namedtuple('Load', 'voltage ampere power')
+Data = collections.namedtuple('Data', 'panel battery load')
 
 port = 'COM3' #"/dev/ttyUSB0"
 
@@ -37,29 +42,10 @@ def read():
     result = _client.read_input_registers(0x311A, 1, unit=1)
     batterySOC = result.registers[0]
 
-    pvData = {
-        'volt': pvVolts,
-        'amp': pvAmps,
-        'power': pvPower
-    }
+    panel = Panel(pvVolts, pvAmps, pvPower)
 
-    loadData = {
-        'volt': loadVolts,
-        'amp': loadAmps,
-        'power': loadPower
-    }
+    load = Load(loadVolts, loadAmps, loadPower)
 
-    batteryData = {
-        'volt': batteryVolts,
-        'amp': batteryAmps,
-        'power': batteryPower,
-        'status': batteryStatus,
-        'temperature': batteryTemp,
-        'soc': batterySOC
-    }
+    battery = Battery(batteryVolts, batteryAmps, batteryPower, batteryStatus, batteryTemp, batterySOC)
 
-    return {
-        'pv': pvData, 
-        'battery': batteryData,
-        'load': loadData
-    }
+    return Data(panel, battery, load)
