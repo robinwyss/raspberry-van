@@ -4,9 +4,9 @@ from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import time
 import collections
 
-Panel = collections.namedtuple('Panel', 'voltage ampere power')
-Battery = collections.namedtuple('Battery', 'voltage ampere power status temperature soc')
-Load = collections.namedtuple('Load', 'voltage ampere power')
+Panel = collections.namedtuple('Panel', 'voltage current')
+Battery = collections.namedtuple('Battery', 'voltage current status temperature soc')
+Load = collections.namedtuple('Load', 'voltage current')
 Data = collections.namedtuple('Data', 'panel battery load')
 
 port = 'COM3' #"/dev/ttyUSB0"

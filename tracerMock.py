@@ -1,9 +1,9 @@
 import collections
 import random
 
-Panel = collections.namedtuple('Panel', 'voltage ampere power')
-Battery = collections.namedtuple('Battery', 'voltage ampere power status temperature soc')
-Load = collections.namedtuple('Load', 'voltage ampere power')
+Panel = collections.namedtuple('Panel', 'voltage current power')
+Battery = collections.namedtuple('Battery', 'voltage current power status temperature soc')
+Load = collections.namedtuple('Load', 'voltage current power')
 Data = collections.namedtuple('Data', 'panel battery load')
 
 pvVolts = 16.0
@@ -36,5 +36,5 @@ def read():
 
     panel = Panel(pvVolts, pvAmps, pvPower)
     load = Load(loadVolts, loadAmps, loadPower)
-    battery = Battery(batteryVolts, batteryAmps, batteryPower, "-", batteryTemp, "-")
+    battery = Battery(batteryVolts, batteryAmps, batteryPower,"-", batteryTemp, "-")
     return Data(panel, battery, load)
