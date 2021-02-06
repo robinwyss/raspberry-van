@@ -18,10 +18,11 @@ Install packages
 `npm install`
 
 ## Run 
+make sure influxDB is running, otherwise start it
+`influxd`
 
 ### Backend
-`export FLASK_APP=main.py`
-`flask run`
+`python3 main.py`
 
 ### Frontend
 `cd web`
