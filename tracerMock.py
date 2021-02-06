@@ -9,7 +9,7 @@ Data = collections.namedtuple('Data', 'panel battery load')
 pvVolts = 16.0
 pvAmps = 5.0
 
-batteryVolts = 13.0
+batteryVolts = 14.0
 batteryAmps = 2.0
 
 loadVolts = 9.0
@@ -25,7 +25,7 @@ def read():
     pvAmps = 5.0 + getRandom()
     pvPower = pvVolts * pvAmps
 
-    batteryVolts = 13.0 + getRandom()
+    batteryVolts = 14.0 + getRandom()
     batteryAmps = 2.0 + getRandom()
     batteryPower = round(batteryVolts * batteryAmps, 1)
 

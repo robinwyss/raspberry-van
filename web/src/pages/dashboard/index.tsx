@@ -1,13 +1,14 @@
 import React from 'react'
-import { Box, Text, defaultProps } from 'grommet'
+import { Box, Text } from 'grommet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSolarPanel, faCarBattery, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
-import { MpptData } from '../../lib/types'
-import { getMpptData } from '../../lib/api'
+import { faSolarPanel, faCarBattery, faAngleDoubleRight, faPlug } from '@fortawesome/free-solid-svg-icons'
+import { MpptData, EmptyMpptData } from '../../lib/types'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import styles from './index.module.css';
 import theme from '../../lib/theme'
+import { getBatteryData } from '../../lib/dataclient'
+import { getBatteryPercentage, getSolarPercentage, getLoadPercentage } from '../../lib/utils'
 
 interface Props { }
 
@@ -17,25 +18,28 @@ interface State {
 
 class Dashboard extends React.Component<Props, State> {
 
+    constructor(props: Props) {
+        super(props);
+
+        // Set the state directly. Use props if necessary.
+        this.state = {
+            MpptData: EmptyMpptData()
+        }
+    }
+
     componentDidMount = () => {
-        getMpptData().then(MpptData => {
+        getBatteryData().then(MpptData => {
             this.setState({ MpptData })
         })
     }
 
     render() {
+        var { battery, solarpanel, load } = this.state.MpptData
 
-
-        if (this.state && this.state.MpptData) {
-            var { batteryVoltage, chargingCurrent, solarCurrent, solarVoltage } = this.state.MpptData
-        } else {
-            var batteryVoltage = 0, chargingCurrent = 0, solarCurrent = 0, solarVoltage = 0
-        }
-
-        const maxWatts = 240;
-        const watts = solarCurrent * solarVoltage
-        const wattPercentage = (watts / maxWatts) * 100
-        const batteryLevel = 90;
+        const solarWatts = solarpanel.voltage * solarpanel.current;
+        const wattPercentage = getSolarPercentage(solarWatts);
+        const batteryPercentage = getBatteryPercentage(battery.voltage);
+        const loadPercentage = getLoadPercentage(load.current);
 
         return (
             <Box
@@ -53,8 +57,8 @@ class Dashboard extends React.Component<Props, State> {
                             styles={buildStyles({
                                 rotation: 1 / 2 + 1 / 8
                             })} >
-                            <Text size="large">{watts}W</Text>
-                            <Text size="small">{solarVoltage}V {solarCurrent}A</Text>
+                            <Text size="large">{solarWatts}W</Text>
+                            <Text size="small">{solarpanel.voltage}V {solarpanel.current}A</Text>
                         </CircularProgressbarWithChildren>
                     </div>
                 </Box>
@@ -64,15 +68,33 @@ class Dashboard extends React.Component<Props, State> {
                 <Box align="center" direction="column">
                     <FontAwesomeIcon size="6x" icon={faCarBattery} />
                     <div className={styles.progress}>
-                        <CircularProgressbarWithChildren value={batteryLevel}
+                        <CircularProgressbarWithChildren value={batteryPercentage}
                             circleRatio={0.75}
                             styles={buildStyles({
                                 pathColor: theme.global.colors.control.dark,
                                 trailColor: theme.global.colors.control.light,
                                 rotation: 1 / 2 + 1 / 8
                             })} >
-                            <Text size="large">{batteryLevel}%</Text>
-                            <Text size="small">{batteryVoltage}V</Text>
+                            <Text size="large">{batteryPercentage}%</Text>
+                            <Text size="small">{battery.voltage}V</Text>
+                        </CircularProgressbarWithChildren>
+                    </div>
+                </Box>
+                <Box>
+                    <FontAwesomeIcon size="6x" icon={faAngleDoubleRight} />
+                </Box>
+                <Box align="center" direction="column">
+                    <FontAwesomeIcon size="6x" icon={faPlug} />
+                    <div className={styles.progress}>
+                        <CircularProgressbarWithChildren value={loadPercentage}
+                            circleRatio={0.75}
+                            styles={buildStyles({
+                                pathColor: theme.global.colors.control.dark,
+                                trailColor: theme.global.colors.control.light,
+                                rotation: 1 / 2 + 1 / 8
+                            })} >
+                            <Text size="large">{loadPercentage}%</Text>
+                            <Text size="small">{battery.voltage}V {battery.current}A</Text>
                         </CircularProgressbarWithChildren>
                     </div>
                 </Box>

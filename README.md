@@ -1,7 +1,8 @@
 
 ### Requirements
-- Python3
-- InfluxDB https://docs.influxdata.com/influxdb/v2.0/get-started/
+* Python3
+* InfluxDB https://docs.influxdata.com/influxdb/v2.0/get-started/
+    * With a bucket called *solardata*
 
 ## Setup
 
@@ -36,5 +37,13 @@ add a config.ini file, example:
 HOST = http://localhost:8086
 TOKEN = XXX
 ORG = van
-BUCKET = data
+BUCKET = solardata
+```
+
+add a .env file, inside the *web* folder example:
+```
+REACT_APP_HOST=http://localhost:8086
+REACT_APP_TOKEN=XXX
+REACT_APP_ORG=van
+REACT_APP_BUCKET=solardata
 ```

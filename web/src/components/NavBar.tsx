@@ -1,11 +1,11 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 import styles from './NavBar.module.css'
-import { getClimate } from '../lib/api'
+// import { getClimate } from '../lib/api'
 import { Climate } from '../lib/types'
-import { Clock, Header, Text } from 'grommet'
+import { Header, Text } from 'grommet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThermometerEmpty, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faThermometerEmpty } from '@fortawesome/free-solid-svg-icons'
 
 
 interface Props { }
@@ -34,9 +34,9 @@ class NavBar extends React.Component<Props, State> {
     }
 
     updateClimate = () => {
-        getClimate().then((result: Climate) => {
-            this.setState({ climate: result })
-        })
+        // getClimate().then((result: Climate) => {
+        //     this.setState({ climate: result })
+        // })
     }
 
     render() {
