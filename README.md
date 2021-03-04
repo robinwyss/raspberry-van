@@ -18,17 +18,6 @@ Install packages
 `cd web`
 `npm install`
 
-## Run 
-make sure influxDB is running, otherwise start it
-`influxd`
-
-### Backend
-`python3 main.py`
-
-### Frontend
-`cd web`
-`npm run start`
-
 ## Config
 
 add a config.ini file, example:
@@ -47,3 +36,15 @@ REACT_APP_TOKEN=XXX
 REACT_APP_ORG=van
 REACT_APP_BUCKET=solardata
 ```
+
+## Run 
+make sure influxDB is running, otherwise start it
+`influxd`
+
+### Backend
+`python3 main.py`
+
+### Frontend
+`cd web`
+`npm run start`
+

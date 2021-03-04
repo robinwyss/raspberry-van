@@ -24,10 +24,18 @@ export type MpptData = {
     load: LoadData
 }
 
-export const EmptyMpptData = (): MpptData => {
+export type MpptResult = {
+    hasData: boolean,
+    data: MpptData
+}
+
+export const EmptyMpptResult = (): MpptResult => {
     return {
-        battery: { current: -1, voltage: -1, temperature: -99 },
-        solarpanel: { current: -1, voltage: -1 },
-        load: { current: -1, voltage: -1 }
+        hasData: false,
+        data: {
+            battery: { current: -1, voltage: -1, temperature: -99 },
+            solarpanel: { current: -1, voltage: -1 },
+            load: { current: -1, voltage: -1 }
+        }
     }
 }
