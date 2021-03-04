@@ -1,22 +1,33 @@
-from flask import Flask
-from flask_cors import CORS
+#!/usr/bin/python
 
-app = Flask(__name__)
-CORS(app)
+from datetime import datetime
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-@app.route("/mppt")
-def mppt():
-    return {
-        "solarVoltage": 36,
-        "solarCurrent": 5.4,
-        "batteryVoltage": 13.3,
-        "chargingCurrent": 10}
+# from tracer import read
+from tracerMock import read
+from influxClient import writeMeasurements
 
-@app.route("/climate")
-def climate():
-    return {
-        "temperature": 21
-    }
+def loadData():
+    print('reading data')
+    result = read()
+    writeMeasurements(result)
+    
+    # print("PV Voltage (V): ", result.panel.voltage)
+    # print("PV Current (A): ", result.panel.ampere)
+    # print("PV Power (W): ", result.panel.power)
+    # print("Battery Voltage (V):", result.battery.voltage)
+    # print("Battery Charging Current (A):", result.battery.ampere)
+    # print("Battery Charging Power (W):", result.battery.power)
+    # print("Load Voltage (V):", result.load.voltage)
+    # print("Load Charging Current (A):", result.load.ampere)
+    # print("Load Charging Power (W):", result.load.power)
+    # print("Battery Temp (C):", result.battery.temperature)
+    # print("Battery Status: ", result.battery.status)
+    # print("batterySOC=", result.battery.soc)
 
-if __name__ == "__main__":
-    app.run()
+# Start the scheduler
+sched = BlockingScheduler()
+
+# Schedule job_function to be called every two hours
+sched.add_job(loadData, 'interval', minutes=1)
+sched.start()
