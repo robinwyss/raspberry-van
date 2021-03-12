@@ -1,3 +1,5 @@
+import moment, { Moment } from "moment"
+
 export type Climate = {
     temperature: string
 }
@@ -26,12 +28,14 @@ export type MpptData = {
 
 export type MpptResult = {
     hasData: boolean,
+    datetime: Moment,
     data: MpptData
 }
 
 export const EmptyMpptResult = (): MpptResult => {
     return {
         hasData: false,
+        datetime: moment(0),
         data: {
             battery: { current: -1, voltage: -1, temperature: -99 },
             solarpanel: { current: -1, voltage: -1 },
