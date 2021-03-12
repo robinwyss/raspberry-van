@@ -1,7 +1,7 @@
 import { FluxTableMetaData } from '@influxdata/influxdb-client'
-import { queryLatestValues } from './influxclient';
+import { queryBatteryValues, queryLatestValues } from './influxclient';
 import { EmptyMpptResult, MpptResult } from "./types";
-
+import { fromFlux, FromFluxResult } from "@influxdata/giraffe";
 
 async function getMpptData(): Promise<MpptResult> {
     const promise = new Promise<MpptResult>((resolve, reject) => {
@@ -45,6 +45,28 @@ async function getMpptData(): Promise<MpptResult> {
                 resolve(result);
             },
             complete() {
+                resolve(result);
+            },
+        })
+    });
+
+    return promise
+}
+
+async function getBatteryData(): Promise<FromFluxResult> {
+    const promise = new Promise<FromFluxResult>((resolve, reject) => {
+        let csv = ""
+        queryBatteryValues({
+            next(line: string) {
+                csv = `${csv}${line}\n`;
+            },
+            error(error: Error) {
+                console.error(error)
+                console.log('\nFinished ERROR')
+                resolve(fromFlux(""));
+            },
+            complete() {
+                const result = fromFlux(csv)
                 resolve(result);
             },
         })
