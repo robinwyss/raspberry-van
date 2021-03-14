@@ -2,33 +2,27 @@ import React from 'react'
 import { Box, Text } from 'grommet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSolarPanel, faCarBattery, faAngleDoubleRight, faPlug } from '@fortawesome/free-solid-svg-icons'
-import { MpptData } from '../../lib/types'
+import { MpptData, PageState } from '../../lib/types'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import styles from './index.module.css';
 import theme from '../../lib/theme'
 import { getMpptData } from '../../lib/dataclient'
 import { getBatteryPercentage, getSolarPercentage, getLoadPercentage } from '../../lib/utils'
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface Props { }
-
-enum PageState {
-    Loading,
-    NoData,
-    Ready,
-}
+// interface Props { }
 
 interface State {
     PageState: PageState
     MpptData?: MpptData
 }
 
-class Dashboard extends React.Component<Props, State> {
+class Dashboard extends React.Component<RouteComponentProps, State> {
 
-    constructor(props: Props) {
+    constructor(props: RouteComponentProps) {
         super(props);
 
-        // Set the state directly. Use props if necessary.
         this.state = {
             PageState: PageState.Loading
         }
@@ -41,7 +35,6 @@ class Dashboard extends React.Component<Props, State> {
             } else {
                 this.setState({ PageState: PageState.NoData })
             }
-
         })
     }
 
@@ -77,6 +70,10 @@ class Dashboard extends React.Component<Props, State> {
         }
     }
 
+    navigateToBattery = () => {
+        this.props.history.push('/battery')
+    }
+
     renderData(mpptData: MpptData) {
         var { battery, solarpanel, load } = mpptData
 
@@ -106,7 +103,7 @@ class Dashboard extends React.Component<Props, State> {
                 <Box>
                     <FontAwesomeIcon color={solarpanel.current > 0 ? theme.global.colors.control.dark : theme.global.colors.control.light} size="6x" icon={faAngleDoubleRight} />
                 </Box>
-                <Box align="center" direction="column">
+                <Box align="center" direction="column" onClick={this.navigateToBattery}>
                     <FontAwesomeIcon size="6x" icon={faCarBattery} />
                     <div className={styles.progress}>
                         <CircularProgressbarWithChildren value={batteryPercentage}
@@ -144,4 +141,5 @@ class Dashboard extends React.Component<Props, State> {
     }
 }
 
-export default Dashboard
+const DashboardWithRouter = withRouter(Dashboard)
+export default DashboardWithRouter

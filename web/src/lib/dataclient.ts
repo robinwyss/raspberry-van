@@ -1,7 +1,6 @@
 import { FluxTableMetaData } from '@influxdata/influxdb-client'
-import { queryBatteryValues, queryLatestValues } from './influxclient';
-import { EmptyMpptResult, MpptResult } from "./types";
-import { fromFlux, FromFluxResult } from "@influxdata/giraffe";
+import { Field, Measurement, queryLatestValues, queryValues } from './influxclient';
+import { CsvResult, EmptyMpptResult, MpptResult } from "./types";
 
 async function getMpptData(): Promise<MpptResult> {
     const promise = new Promise<MpptResult>((resolve, reject) => {
@@ -53,20 +52,25 @@ async function getMpptData(): Promise<MpptResult> {
     return promise
 }
 
-async function getBatteryData(): Promise<FromFluxResult> {
-    const promise = new Promise<FromFluxResult>((resolve, reject) => {
-        let csv = ""
-        queryBatteryValues({
+async function getData(measurement: Measurement, field: Field): Promise<CsvResult> {
+    const promise = new Promise<CsvResult>((resolve, reject) => {
+        const result = {
+            hasData: false,
+            csv: ""
+        }
+        queryValues(measurement, field, {
             next(line: string) {
-                csv = `${csv}${line}\n`;
+                if (line.length > 0) {
+                    result.hasData = true;
+                }
+                result.csv = `${result.csv}${line}\n`;
             },
             error(error: Error) {
                 console.error(error)
                 console.log('\nFinished ERROR')
-                resolve(fromFlux(""));
+                resolve({ hasData: false, csv: "" });
             },
             complete() {
-                const result = fromFlux(csv)
                 resolve(result);
             },
         })
@@ -75,4 +79,4 @@ async function getBatteryData(): Promise<FromFluxResult> {
     return promise
 }
 
-export { getMpptData }
+export { getMpptData, getData }

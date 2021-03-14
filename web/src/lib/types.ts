@@ -29,6 +29,17 @@ export type MpptResult = {
     data: MpptData
 }
 
+export type CsvResult = {
+    hasData: boolean,
+    csv: string
+}
+
+export enum PageState {
+    Loading,
+    NoData,
+    Ready,
+}
+
 export const EmptyMpptResult = (): MpptResult => {
     return {
         hasData: false,
