@@ -11,11 +11,11 @@ function App() {
   return (
     <Grommet theme={theme} full>
       <Main>
-        <NavBar />
         <BrowserRouter>
+          <NavBar />
           <Switch>
             <Route exact path="/" component={Dashboard} />
-            <Route exact path="/battery" component={Battery} />
+            <Route exact path="/details/:measurement" component={Battery} />
           </Switch>
         </BrowserRouter>
       </Main>

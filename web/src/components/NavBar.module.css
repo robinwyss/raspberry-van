@@ -1,7 +1,10 @@
 .navbar {
-    height: 30px;
-}
-
-.date {
-    float: right;
+  padding: 10px;
+  background-color: #1e2223;
+  color: #e8f7ff;
+  box-shadow: 0 8px 6px -6px #1e2223;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
