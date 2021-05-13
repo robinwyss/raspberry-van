@@ -20,13 +20,8 @@ def writeMeasurements(data):
         f'load current={data.load.current}',
     ]
 
-    write_api = _client.write_api(write_options=SYNCHRONOUS)
-    write_api.write(bucket, org, sequence)
-
-# def addMeasurement(measurement, device, field, value):
-#     point = Point(measurement)\\
-#     .tag("device", device)\\
-#     .field(field, value)\\
-#     .time(datetime.utcnow(), WritePrecision.NS)
-
-#     write_api.write(bucket, org, point)
+    if _client.health().status == 'pass':
+        write_api = _client.write_api(write_options=SYNCHRONOUS)
+        write_api.write(bucket, org, sequence)
+    else:
+        print('Error: could not connect to InfluxDB')

@@ -1,0 +1,26 @@
+button {
+    background: transparent;
+    color: #E8F7FF;
+    border: 3px solid #E8F7FF;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    min-width: 100px;
+}
+
+button:hover {
+    filter: brightness(50%);
+}
+
+button.selected {
+    background-color: #E8F7FF;
+    color:#292F31;
+}
+
+span {
+    vertical-align: super;
+}
+
+svg + span {
+    margin-left: 5px;
+}

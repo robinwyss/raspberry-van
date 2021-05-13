@@ -1,23 +1,19 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 import styles from './NavBar.module.css'
-// import { getClimate } from '../lib/api'
 import { Climate } from '../lib/types'
-import { Header, Text } from 'grommet'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThermometerEmpty } from '@fortawesome/free-solid-svg-icons'
-
-
-interface Props { }
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface State {
     date: Moment,
     climate: Climate
 }
 
-class NavBar extends React.Component<Props, State> {
+class NavBar extends React.Component<RouteComponentProps, State> {
 
-    constructor(props: Props) {
+    constructor(props: RouteComponentProps) {
         super(props);
         this.state = {
             climate: { temperature: "--" },
@@ -26,39 +22,28 @@ class NavBar extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.updateClimate();
         // update time every second
         setInterval(() => this.setState({ date: moment() }), 1000)
-        // update climate every minutes
-        setInterval(this.updateClimate, 60000)
-    }
-
-    updateClimate = () => {
-        // getClimate().then((result: Climate) => {
-        //     this.setState({ climate: result })
-        // })
     }
 
     render() {
         var { date, climate } = this.state;
+        const goHome = () => this.props.history.push('/')
+
+
         return (
-            <Header
-                background="brand"
-                pad={{ left: 'medium', right: 'small', vertical: 'small' }}
-                elevation='medium'>
-                <div >
-                    <FontAwesomeIcon icon={faThermometerEmpty} />
-                    <Text margin="small">{climate.temperature}</Text>
+            <nav className={styles.navbar}>
+                <div className={styles.menu}>
+                    <FontAwesomeIcon onClick={goHome} icon={faTachometerAlt} size="2x" />
                 </div>
                 <div className={styles.date}>
-                    <Text margin="small"></Text>
-                    {date.format('H:mm DD.MM.YYYY')}
+                    {date.format('DD.MM.YYYY | H:mm')}
                 </div>
-            </Header >
-
+            </nav>
         )
     }
 
 }
 
-export default NavBar
+const NavBarWithRouter = withRouter(NavBar)
+export default NavBarWithRouter

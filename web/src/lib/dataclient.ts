@@ -1,7 +1,6 @@
 import { FluxTableMetaData } from '@influxdata/influxdb-client'
-import { queryLatestValues } from './influxclient';
-import { EmptyMpptResult, MpptResult } from "./types";
-import moment from 'moment'
+import { Field, Measurement, queryLatestValues, queryValues } from './influxclient';
+import { CsvResult, EmptyMpptResult, MpptResult } from "./types";
 
 
 async function getMpptData(): Promise<MpptResult> {
@@ -56,4 +55,31 @@ async function getMpptData(): Promise<MpptResult> {
     return promise
 }
 
-export { getMpptData }
+async function getData(measurement: Measurement, field: Field): Promise<CsvResult> {
+    const promise = new Promise<CsvResult>((resolve, reject) => {
+        const result = {
+            hasData: false,
+            csv: ""
+        }
+        queryValues(measurement, field, {
+            next(line: string) {
+                if (line.length > 0) {
+                    result.hasData = true;
+                }
+                result.csv = `${result.csv}${line}\n`;
+            },
+            error(error: Error) {
+                console.error(error)
+                console.log('\nFinished ERROR')
+                resolve({ hasData: false, csv: "" });
+            },
+            complete() {
+                resolve(result);
+            },
+        })
+    });
+
+    return promise
+}
+
+export { getMpptData, getData }
