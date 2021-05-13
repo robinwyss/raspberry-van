@@ -2,10 +2,12 @@
 const theme = {
     global: {
         colors: {
-            brand: '#414a4c',
+            brand: '#292F31',
+            brandDarker: '1E2223',
+            foreground: 'E8F7FF',
             control: {
-                light: '#e1e5e6',
-                dark: '#166677'
+                dark: '#2A3E57',
+                light: '#657597'
             }
         },
         font: {

@@ -1,12 +1,15 @@
+import { faCalendarDay, faCalendarWeek, faCarBattery, faChartLine, faPlug, faSolarPanel } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Config, fromFlux, LineLayerConfig, NINETEEN_EIGHTY_FOUR, Plot } from '@influxdata/giraffe'
-import { Box } from 'grommet'
 import React from 'react'
+import { match, RouteComponentProps } from 'react-router-dom'
 import { getData } from '../../lib/dataclient'
 import { Field, Measurement } from '../../lib/influxclient'
 import { PageState } from '../../lib/types'
+import Button from '../../components/Button'
 
-interface Props {
-
+interface Params {
+    measurement: string
 }
 
 interface State {
@@ -16,17 +19,34 @@ interface State {
     field: Field
 }
 
-class Details extends React.Component<Props, State> {
+class Details extends React.Component<RouteComponentProps<Params>, State> {
 
-    constructor(props: Props) {
+    constructor(props: RouteComponentProps<Params>) {
         super(props)
+
+        const measurement = this.getMeasurementFromParam(props.match.params.measurement)
+        if (!measurement) {
+            props.history.push("/")
+            return
+        }
 
         this.state = {
             state: PageState.Loading,
             csvData: "",
             field: Field.Current,
-            measurement: Measurement.Battery
+            measurement
         }
+    }
+
+    getMeasurementFromParam(param: string) {
+        if (Measurement.Battery === param) {
+            return Measurement.Battery;
+        } else if (Measurement.Load === param) {
+            return Measurement.Load
+        } else if (Measurement.Solarpanel == param) {
+            return Measurement.Solarpanel
+        }
+        return undefined;
     }
 
     componentDidMount() {
@@ -35,22 +55,54 @@ class Details extends React.Component<Props, State> {
             console.log(result)
             this.setState({
                 csvData: result.csv,
-                state: result.hasData ? PageState.Ready : PageState.NoData
+                state: result.hasData ? PageState.Ready : PageState.NoData,
             })
         })
     }
 
     render() {
+        const buttonStyle = {
+            height: 56
+        }
+
+        const menuStyle = {
+            display: "flex",
+            justifyContent: "space-between",
+            backgroundColor: "#292F31" //"#1C1C21"
+        }
+
+        const containerStyle = {
+            display: "flex",
+            flexDirection: "column" as "column",
+            alignItems: 'stretch',
+            height: '100%'
+        }
+
+        const contentStyle = {
+            flex: 1
+        }
+
         return (
-            <Box
-                fill="vertical"
-                align="center"
-                alignContent="center"
-                justify="center"
-                gap="large"
-                direction="row">
-                {this.renderContent()}
-            </Box>
+            <div style={containerStyle}>
+                <div style={menuStyle}>
+                    <div>
+                        <Button icon={faSolarPanel} selected />
+                        <Button icon={faCarBattery} />
+                        <Button icon={faPlug} />
+                    </div>
+                    <div>
+                        <Button icon={faChartLine} label="Voltage" />
+                        <Button icon={faChartLine} selected label="Current" />
+                    </div>
+                    <div>
+                        <Button icon={faCalendarDay} selected label="Day" />
+                        <Button icon={faCalendarWeek} label="Week" />
+                    </div>
+                </div>
+                <div style={contentStyle}>
+                    {this.renderContent()}
+                </div>
+            </div>
         )
 
     }
@@ -90,7 +142,7 @@ class Details extends React.Component<Props, State> {
         const style = {
             width: '100%',
             height: '100%',
-            backgroundColor: '#1C1C21'
+            backgroundColor: '#292F31'
         };
 
         return (
