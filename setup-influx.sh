@@ -25,7 +25,7 @@ printf 'Configure InfluxDB org: %s, bucke: %s\r\n'
 # setup influxDB
 docker exec -it $containername influx setup --org $org --bucket $bucket --username raspberry --password raspberry --force
 bucketId=$(docker exec -it $containername influx bucket list -n $bucket --json | jq -r '.[0].id')
-webtoken=$(docker exec -it $containername influx auth create -o $org --read-bucket $bucketId -d apiToken -d tracer-client --json | jq '.token' -r)
+webtoken=$(docker exec -it $containername influx auth create -o $org --read-bucket $bucketId -d apiToken -d web-client --json | jq '.token' -r)
 tracerToken=$(docker exec -it $containername influx auth create -o $org --write-bucket $bucketId -d apiToken -d tracer-client --json | jq '.token' -r)
 
 printf 'Write config %s\r\n' $tracerconfig
@@ -40,7 +40,7 @@ EOM
 printf 'Write config %s\r\n' $webconfig
 /bin/cat <<EOM >$webconfig
 REACT_APP_HOST=http://localhost:$port
-REACT_APP_TOKEN=$tracerToken
+REACT_APP_TOKEN=$webtoken
 REACT_APP_ORG=$org
 REACT_APP_BUCKET=$bucket
 EOM
