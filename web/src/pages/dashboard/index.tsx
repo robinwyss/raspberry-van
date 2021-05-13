@@ -11,12 +11,14 @@ import { getMpptData } from '../../lib/dataclient'
 import { getBatteryPercentage, getSolarPercentage, getLoadPercentage } from '../../lib/utils'
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { Moment } from 'moment'
 
 // interface Props { }
 
 interface State {
     PageState: PageState
     MpptData?: MpptData
+    lastupdate?: Moment
 }
 
 class Dashboard extends React.Component<RouteComponentProps, State> {
@@ -30,9 +32,14 @@ class Dashboard extends React.Component<RouteComponentProps, State> {
     }
 
     componentDidMount = () => {
+        this.fetchData()
+        setInterval(this.fetchData, 60000)
+    }
+
+    fetchData = () => {
         getMpptData().then(MpptResult => {
             if (MpptResult.hasData) {
-                this.setState({ MpptData: MpptResult.data, PageState: PageState.Ready })
+                this.setState({ MpptData: MpptResult.data, lastupdate: MpptResult.datetime, PageState: PageState.Ready })
             } else {
                 this.setState({ PageState: PageState.NoData })
             }
@@ -77,6 +84,8 @@ class Dashboard extends React.Component<RouteComponentProps, State> {
 
     renderData(mpptData: MpptData) {
         var { battery, solarpanel, load } = mpptData
+
+        const date = this.state.lastupdate?.format('H:mm DD.MM.YYYY')
 
         const solarWatts = Math.round(solarpanel.voltage * solarpanel.current);
         const wattPercentage = getSolarPercentage(solarWatts);

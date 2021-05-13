@@ -2,6 +2,7 @@ import { FluxTableMetaData } from '@influxdata/influxdb-client'
 import { Field, Measurement, queryLatestValues, queryValues } from './influxclient';
 import { CsvResult, EmptyMpptResult, MpptResult } from "./types";
 
+
 async function getMpptData(): Promise<MpptResult> {
     const promise = new Promise<MpptResult>((resolve, reject) => {
         const result = EmptyMpptResult()
@@ -9,6 +10,8 @@ async function getMpptData(): Promise<MpptResult> {
             next(row: string[], tableMeta: FluxTableMetaData) {
                 result.hasData = true;
                 const o = tableMeta.toObject(row)
+                const dateTime = moment(o._time)
+                result.datetime = dateTime.isAfter(result.datetime) ? dateTime : result.datetime
                 switch (o._measurement) {
                     case "battery":
                         switch (o._field) {
