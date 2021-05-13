@@ -8,11 +8,11 @@ port = 'COM3' #"/dev/ttyUSB0"
 
 
 _client = ModbusClient(method = 'rtu', port = port, baudrate = 115200)
-client.connect()
+_client.connect()
 
 def read():
     # read 6 registers starting at 0x3100
-    result = client.read_input_registers(0x3100, 17, unit=1)
+    result = _client.read_input_registers(0x3100, 17, unit=1)
 
     pvVolts = float(result.registers[0] / 100.0)
     pvAmps = float(result.registers[1] / 100.0)
@@ -25,14 +25,14 @@ def read():
     loadPower = float(result.registers[14] / 100.0)
     batteryTemp = float(result.registers[16] / 100.0)
 
-    result2 = client.read_input_registers(0x3200, 2, unit=1)
+    result2 = _client.read_input_registers(0x3200, 2, unit=1)
     batteryStatus = result2.registers[0]
     equipmentStatus = result2.registers[1]
     
     time.sleep(1) # pause before reading the next register
 
     # read the battery SOC
-    result = client.read_input_registers(0x311A, 1, unit=1)
+    result = _client.read_input_registers(0x311A, 1, unit=1)
     batterySOC = result.registers[0]
 
     # TODO was here, return data type

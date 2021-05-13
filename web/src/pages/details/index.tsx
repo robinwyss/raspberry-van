@@ -129,14 +129,14 @@ class Details extends React.Component<RouteComponentProps<Params>, State> {
             shadeBelow: true,
             shadeBelowOpacity: 0.1,
             interpolation: "monotoneX",
-            colors: NINETEEN_EIGHTY_FOUR
+            colors: NINETEEN_EIGHTY_FOUR,
         }
 
         const config: Config = {
             table: dataFromFlux.table,
             xScale: 'linear',
             yScale: 'linear',
-            layers: [lineLayer],
+            layers: [lineLayer]
         }
 
         const style = {
